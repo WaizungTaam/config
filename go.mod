@@ -1,4 +1,4 @@
-module config
+module github.com/waizungtaam/config
 
 go 1.16
 

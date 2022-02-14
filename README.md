@@ -26,7 +26,7 @@ func main() {
 	if err := config.Load("dev.yml", &c); err != nil {
 		panic(err)
 	}
-	fmt.Printf("%+v\v", c)
+	fmt.Printf("%+v\n", c)
 }
 ```
 
