@@ -11,12 +11,12 @@ type tagOptions struct {
 	DefaultValue string
 }
 
-func parseTag(tag string) (*tagOptions, error) {
+func parseTag(tag string, delimeter string) (*tagOptions, error) {
 	options := tagOptions{}
 	if len(tag) == 0 {
 		return &options, nil
 	}
-	for _, s := range strings.Split(tag, ";") {
+	for _, s := range strings.Split(tag, delimeter) {
 		switch {
 		case s == "required":
 			options.Required = true

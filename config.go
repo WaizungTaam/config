@@ -7,18 +7,55 @@ import (
 	"reflect"
 )
 
+var (
+	defaultTagName   = "config"
+	defaultDelimeter = ";"
+)
+
+// Loader is a config loader
+type Loader struct {
+	options *Options
+}
+
+// Options contains loader options
+type Options struct {
+	TagName   string
+	Delimeter string
+}
+
+// New creates a new loader with default options
+func New() *Loader {
+	return &Loader{
+		options: &Options{
+			TagName:   defaultTagName,
+			Delimeter: defaultDelimeter,
+		},
+	}
+}
+
+// NewWithOptions creates a new loader with given options
+func NewWithOptions(options *Options) *Loader {
+	return &Loader{options: options}
+}
+
+// With applies options
+func (d *Loader) With(f func(*Options)) *Loader {
+	f(d.options)
+	return d
+}
+
 // Load loads config from a file
-func Load(file string, config interface{}) error {
-	if err := readConfig(file, config); err != nil {
+func (d Loader) Load(file string, config interface{}) error {
+	if err := d.read(file, config); err != nil {
 		return err
 	}
-	if err := process(config); err != nil {
+	if err := d.process(config); err != nil {
 		return err
 	}
 	return nil
 }
 
-func readConfig(file string, config interface{}) error {
+func (d Loader) read(file string, config interface{}) error {
 	value := reflect.Indirect(reflect.ValueOf(config))
 	if !value.CanAddr() {
 		return fmt.Errorf("config not addressable")
@@ -42,7 +79,7 @@ func readConfig(file string, config interface{}) error {
 	}
 }
 
-func process(config interface{}) error {
+func (d Loader) process(config interface{}) error {
 	configValue := reflect.Indirect(reflect.ValueOf(config))
 	if configValue.Kind() != reflect.Struct {
 		return fmt.Errorf("struct required")
@@ -52,8 +89,8 @@ func process(config interface{}) error {
 		field := configType.Field(i)
 		value := configValue.Field(i)
 
-		tag := field.Tag.Get("config")
-		options, err := parseTag(tag)
+		tag := field.Tag.Get(d.options.TagName)
+		options, err := parseTag(tag, d.options.Delimeter)
 		if err != nil {
 			return err
 		}
@@ -70,4 +107,9 @@ func process(config interface{}) error {
 		}
 	}
 	return nil
+}
+
+// Load loads config from a file with default options
+func Load(file string, config interface{}) error {
+	return New().Load(file, config)
 }
