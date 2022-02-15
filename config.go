@@ -94,15 +94,15 @@ func (d Loader) process(config interface{}) error {
 		if err != nil {
 			return err
 		}
-		isZeroValue := isZero(value)
+		isZero := value.IsZero()
 
-		if options.Required && isZeroValue {
+		if options.Required && isZero {
 			return fmt.Errorf("field \"%s\" required", field.Name)
 		}
 
-		if options.HasDefault && isZeroValue && value.CanAddr() && value.CanInterface() {
-			if err := loadYAML([]byte(options.DefaultValue), value.Addr().Interface()); err != nil {
-				return fmt.Errorf("invalid default value for \"%s\": %w", field.Name, err)
+		if options.HasDefault && isZero && value.CanSet() {
+			if err := setDefaultValue(value, options.DefaultValue); err != nil {
+				return err
 			}
 		}
 	}

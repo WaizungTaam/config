@@ -28,7 +28,7 @@ func newTestConfig() testConfig {
 	}
 }
 
-func TestLoadJYAML(t *testing.T) {
+func TestLoadYAML(t *testing.T) {
 	file, err := ioutil.TempFile("", "config-*.yaml")
 	if err != nil {
 		t.Errorf("failed to create yaml config file")
@@ -54,7 +54,7 @@ func TestLoadJYAML(t *testing.T) {
 	}
 }
 
-func TestLoadJTOML(t *testing.T) {
+func TestLoadTOML(t *testing.T) {
 	file, err := ioutil.TempFile("", "config-*.toml")
 	if err != nil {
 		t.Errorf("failed to create toml config file")
