@@ -30,6 +30,14 @@ func main() {
 }
 ```
 
+## TODO
+- Complete unit tests
+- Support shell environment variables
+- Support custom parsing drivers
+- Support auto-reload
+- Support remote config
+- Support merging multiple configs
+
 ## Author
 waizungtaam
 
